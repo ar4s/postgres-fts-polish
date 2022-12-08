@@ -5,8 +5,14 @@ pub struct DbOperations {
     dict_name: String,
 }
 impl DbOperations {
-    pub fn new(dict_name: String, host: &str, user: &str, password: &str) -> DbOperations {
-        let conn_config = format!("host={host} user={user} password={password} dbname=pkd");
+    pub fn new(
+        dict_name: String,
+        host: &str,
+        user: &str,
+        password: &str,
+        database: &str,
+    ) -> DbOperations {
+        let conn_config = format!("host={host} user={user} password={password} dbname={database}");
         let client = match Client::connect(&conn_config, NoTls) {
             Ok(conn) => conn,
             Err(err) => panic!("Connection error: {err}"),
@@ -40,7 +46,7 @@ impl DbOperations {
     }
     pub fn check(&mut self) {
         let query = check_query(&self.dict_name);
-        let res = self.client.query(&query, &[]).expect("Check");
+        self.client.query(&query, &[]).expect("Check");
         println!("Check execute successfully!");
     }
 }

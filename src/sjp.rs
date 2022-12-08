@@ -5,7 +5,7 @@ use std::io::Write;
 use std::{collections::HashMap, path::Path};
 use tar::Archive;
 
-const BASE: &str = "https://www.pkd.info.pl/";
+const BASE: &str = "https://sjp.pl/sl/ort/";
 const STOP_WORDS_URL: &str =
     "https://raw.githubusercontent.com/bieli/stopwords/master/polish.stopwords.txt";
 

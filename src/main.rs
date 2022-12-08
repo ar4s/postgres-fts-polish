@@ -9,7 +9,7 @@ use db::DbOperations;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    #[arg(long)]
+    #[arg(long, default_value = "polish")]
     dict_name: String,
 
     #[arg(long, default_value = "20221201")]
@@ -19,7 +19,19 @@ struct Args {
     dest_dir: String,
 
     #[arg(long)]
-    force: bool
+    force: bool,
+
+    #[arg(long)]
+    hostname: String,
+
+    #[arg(long)]
+    username: String,
+
+    #[arg(long)]
+    password: String,
+
+    #[arg(long)]
+    database: String
 }
 
 fn main() {
@@ -31,7 +43,7 @@ fn main() {
     sjp::download_and_save_stop_words(&dest_path);
     sjp::download_and_unpack(args.date, &dest_path);
 
-    let mut db = DbOperations::new(args.dict_name, "localhost", "postgres", "postgres");
+    let mut db = DbOperations::new(args.dict_name, &args.hostname, &args.username, &args.password, &args.database);
 
     if args.force {
       db.drop();
