@@ -1,7 +1,8 @@
 use bzip2::read::BzDecoder;
+use iconv::Iconv;
 use reqwest::blocking::get;
 use std::fs::File;
-use std::io::Write;
+use std::io::{Read, Write};
 use std::{collections::HashMap, path::Path};
 use tar::Archive;
 
@@ -18,6 +19,7 @@ pub fn download_and_save_stop_words(dir_dest: &Path) {
     file.write_all(&content.as_bytes())
         .expect("Write polish.stop");
 }
+
 
 pub fn download_and_unpack(date: String, dir_dest: &Path) {
     let file_mapper = HashMap::from([
@@ -42,7 +44,13 @@ pub fn download_and_unpack(date: String, dir_dest: &Path) {
         match check {
             Some(f) => {
                 println!("Found! {}", f);
-                file.unpack(dir_dest.join(f)).expect("unpack error");
+                let mut iconv = Iconv::new("ISO_8859-2", "utf-8").expect("iconv");
+                let mut content =Vec::new();
+                let mut converted = Vec::new();
+                let mut output_file = File::create(dir_dest.join(&f)).expect("File creation failed");
+                file.read(&mut content).expect("Read failed");
+                iconv.convert(&content, &mut converted).expect("Convert failed");
+                output_file.write_all(&converted).expect("Write failed");
             }
             None => println!("Skipping {file_name}..."),
         }
