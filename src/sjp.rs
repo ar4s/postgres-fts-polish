@@ -1,6 +1,5 @@
 use bzip2::read::BzDecoder;
 use encoding_rs::ISO_8859_2;
-use iconv::Iconv;
 use reqwest::blocking::get;
 use std::fs::File;
 use std::io::{Read, Write};
